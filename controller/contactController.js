@@ -13,17 +13,18 @@ export const readContact = async (req, res) => {
 
 export const createContact = async (req, res) => {
   const mailOptions = new Contact(req.body);
-  console.log(mailOptions);
 
   await mailOptions
     .save()
     .then(() => {
       res.status(201).json({ status: true, data: "Data saved" });
+      let content = `${mailOptions.content} \n From: ${mailOptions.name} \n Phone number: ${mailOptions.phone} \n`;
+
       let mailDetails = {
         from: `${mailOptions.name} <${mailOptions.email}>`,
         to: process.env.website_mail,
         subject: 'Inquiry',
-        text: mailOptions.content,
+        text: content,
       };
       sendEmail(mailDetails);
     })
